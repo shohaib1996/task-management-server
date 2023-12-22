@@ -27,7 +27,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
     // Send a ping to confirm a successful connection
     const taskCollection = client.db("taskManager").collection("tasks")
 
@@ -38,7 +38,12 @@ async function run() {
       res.send(result)
     })
     app.get("/tasks", async (req, res) => {
-      const cursor = taskCollection.find()
+      const {email} = req.query
+      let query = {}
+      if(email){
+        query = {email: email}
+      }
+      const cursor = taskCollection.find(query)
       const result = await cursor.toArray()
       res.send(result)
     })
