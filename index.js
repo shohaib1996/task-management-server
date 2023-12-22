@@ -31,7 +31,7 @@ async function run() {
     // Send a ping to confirm a successful connection
     const taskCollection = client.db("taskManager").collection("tasks")
 
-    
+
     app.post("/tasks", async (req, res) => {
       const newTask = req.body
       const result = await taskCollection.insertOne(newTask)
@@ -53,6 +53,20 @@ async function run() {
       const result = await taskCollection.updateOne(filter, updateDoc);
       res.send(result)
     });
+    app.patch("/tasks/:id", async (req, res) => {
+      const id = req.params.id;
+      const updatedTask = req.body;
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: updatedTask,
+      };
+      console.log(updateDoc);
+
+      const result = await taskCollection.updateOne(filter, updateDoc);
+
+      res.send(result)
+    });
+
     app.delete("/tasks/:id", async (req, res) => {
       const id = req.params.id
       const filter = { _id: new ObjectId(id) }
